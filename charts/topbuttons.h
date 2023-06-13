@@ -16,14 +16,15 @@ public:
         delete isBlackAndWhite;
         delete isBlackAndWhiteLabel;
         delete printToPDF;
+        delete chooseFolder;
     }
-private:
+//private:
     QComboBox* chartType;
     QLabel* chartTypeLabel;
     QCheckBox* isBlackAndWhite;
     QLabel* isBlackAndWhiteLabel;
     QPushButton* printToPDF;
-
+    QPushButton* chooseFolder;
 };
 
 #endif // TOPBUTTONS_H

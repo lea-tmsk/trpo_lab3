@@ -1,32 +1,40 @@
 #include "topbuttons.h"
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QFormLayout>
 
 TopButtons::TopButtons(QWidget* parent) : QWidget(parent) {
-    chartType = new QComboBox(this);
+    chooseFolder = new QPushButton("Выбрать папку", this);
 
+    chartType = new QComboBox(this);
     chartType->addItem("Pie Chart");
     chartType->addItem("Bar Chart");
 
-    chartTypeLabel = new QLabel(this);
-
-    chartTypeLabel->setText("Выберите тип диаграммы");
+    chartTypeLabel = new QLabel("Тип диаграммы", this);
 
     isBlackAndWhite = new QCheckBox(this);
+    isBlackAndWhiteLabel = new QLabel("Черно-белый график", this);
 
-    isBlackAndWhiteLabel = new QLabel(this);
+    printToPDF = new QPushButton("Печать графика", this);
 
-    isBlackAndWhiteLabel->setText("Черно-белый график");
+    QHBoxLayout* comboboxLayout = new QHBoxLayout();
 
-    printToPDF = new QPushButton(this);
+    comboboxLayout->addWidget(chartTypeLabel);
+    comboboxLayout->addWidget(chartType);
+    comboboxLayout->setSpacing(5);
 
-    printToPDF->setText("Печать графика");
+    QHBoxLayout* checkboxLayout = new QHBoxLayout();
+
+    checkboxLayout->addWidget(isBlackAndWhite);
+    checkboxLayout->addWidget(isBlackAndWhiteLabel);
+    checkboxLayout->setSpacing(5);
 
     QHBoxLayout* hLayout = new QHBoxLayout(this);
+    hLayout->setSpacing(20);
 
-    hLayout->addWidget(chartTypeLabel);
-    hLayout->addWidget(chartType);
-    hLayout->addWidget(isBlackAndWhite);
-    hLayout->addWidget(isBlackAndWhiteLabel);
+    hLayout->addStretch();
+    hLayout->addWidget(chooseFolder);
+    hLayout->addLayout(comboboxLayout);
+    hLayout->addLayout(checkboxLayout);
     hLayout->addWidget(printToPDF);
+    hLayout->addStretch();
 }

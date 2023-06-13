@@ -4,38 +4,82 @@
 #include <QtCharts/QBarSet>
 #include <QtCharts/QStackedBarSeries>
 #include <QVector>
+#include <QLabel>
+#include <QHBoxLayout>
 
-ChartsView::ChartsView()
-{
+ChartsView::ChartsView(QWidget *parent) {
+    m_chartLayout = new QVBoxLayout(this);
+    m_placeholder = new QLabel("Выберите файл", this);
 
+    m_placeholderLayout = new QHBoxLayout();
+
+    m_placeholderLayout->addStretch();
+    m_placeholderLayout->addWidget(m_placeholder);
+    m_placeholderLayout->addStretch();
+
+    m_chartView = new QtCharts::QChartView();
+
+    m_chartLayout->addLayout(m_placeholderLayout);
+
+    m_chartView->setRenderHint(QPainter::Antialiasing);
+
+    m_chart = m_chartView->chart();
+
+//    m_chart->setTheme();
+    m_chart->setTheme(QtCharts::QChart::ChartThemeLight);
+
+    m_chart->legend()->hide();
+    m_chartType = new PieChart();
 }
 
-QtCharts::QChartView* ChartsView::createChart(QMap<QString, QVariant> data) {
-    m_chartView = new QtCharts::QChartView();
-    m_chartView->setRenderHint(QPainter::Antialiasing);
-    m_chartView->resize(640, 480);
+void ChartsView::setChartType(Chart *newType) {
+    if (newType != nullptr) {
+        m_chartType = newType;
+        if (m_currentData.size() > 0) {
+            updateChart();
+        }
+    }
+}
 
-    QtCharts::QChart *chart = m_chartView->chart();
-//    chart->setTitle("Beautiful Pie Chart");
-    chart->legend()->hide();
+void ChartsView::setData(const QMap<QString, QVariant> &data) {
+    m_currentData = data;
+    updateChart();
+}
 
-//    QtCharts::QPieSeries *series = new QtCharts::QPieSeries();
-//    float hits = 73.0f, misses = 27.0f;
-//    series->append("Hits", hits);
-//    series->append("Misses", misses);
+void ChartsView::updateChart() {
+    m_chartLayout->removeItem(m_placeholderLayout);
+    m_chart->removeAllSeries();
 
-//    QtCharts::QPieSlice *hit_slice = series->slices().at(0);
-//    hit_slice->setBrush(QColor(87, 147, 243));  // blue
-
-//    QtCharts::QPieSlice *miss_slice = series->slices().at(1);
-//    miss_slice->setBrush(QColor(221, 68, 68)); // red
-    chart->addSeries(getSeries(data));
+    QtCharts::QAbstractSeries *series = m_chartType->getSeries(m_currentData);
+    m_chart->addSeries(series);
 
     // Due to Qt bug, must show() the chart before render()
     // or it will be draw too tiny in the PDF by QPainter
+    m_chart->createDefaultAxes();
 
-//    chartView->show();
-    return m_chartView;
+    m_chartLayout->addWidget(m_chartView);
+    m_chartView->show();
+}
+
+void ChartsView::updatePlaceholder(QString str) {
+    m_chartView->hide();
+
+    m_placeholder->setText(str);
+
+    m_placeholderLayout->setParent(nullptr);
+    m_chartLayout->addLayout(m_placeholderLayout);
+}
+
+void ChartsView::changeColorPalette(bool isBlackAndWhite) {
+    if (isBlackAndWhite == true) {
+        m_chart->setTheme(QtCharts::QChart::ChartThemeHighContrast);
+    } else {
+        m_chart->setTheme(QtCharts::QChart::ChartThemeLight);
+    }
+
+    if (m_currentData.size() > 0) {
+        updateChart();
+    }
 }
 
 QtCharts::QAbstractSeries *PieChart::getSeries(QMap<QString, QVariant> data) {
@@ -50,14 +94,12 @@ QtCharts::QAbstractSeries *PieChart::getSeries(QMap<QString, QVariant> data) {
 
 QtCharts::QAbstractSeries *BarChart::getSeries(QMap<QString, QVariant> data) {
     m_series = new QtCharts::QStackedBarSeries();
-//    QVector<QVariant> sets;
     QMapIterator<QString, QVariant> i(data);
+    QtCharts::QBarSet *set = new QtCharts::QBarSet("");
     while (i.hasNext()) {
         i.next();
-        QtCharts::QBarSet *set = new QtCharts::QBarSet(i.key());
         *set << i.value().toDouble();
-//        sets.push_back(QBarSet(i.key()));
-        m_series->append(set);
     }
+    m_series->append(set);
     return m_series;
 }

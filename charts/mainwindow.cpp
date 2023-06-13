@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QSplitter>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -8,19 +8,26 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->setGeometry(100, 100, 1500, 800);
+
 
 //    QHBoxLayout* hLayout = new QHBoxLayout(this);
 
-    filesView = new FilesView(this);
-    topButtons = new TopButtons(this);
+//    filesView = new FilesView(this);
+//    topButtons = new TopButtons(this);
 
-    QSplitter *splitter = new QSplitter(this);
+    //QVBoxLayout *hLayout = new QVBoxLayout(this);
+
+//    hLayout->addWidget(new TopButtons(this));
+//    hLayout->addWidget(topButtons);
+    //hLayout->addWidget(filesView);
+    //hLayout->addStretch();
+
+//    QSplitter *splitter = new QSplitter(this);
 //    tableView = new QTableView;
 //    tableView->setModel(rightPartModel);
-    splitter->addWidget(filesView);
-    splitter->addWidget(topButtons);
-    setCentralWidget(splitter);
+    //splitter->addWidget(filesView);
+    //splitter->addWidget(topButtons);
+    //setCentralWidget(splitter);
 
 //    hLayout->addWidget(filesView);
 //    hLayout->addWidget(topButtons);

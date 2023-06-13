@@ -12,8 +12,9 @@ public:
     FilesView(QWidget *parent);
     ~FilesView() {};
 
-private slots:
-    void onSelectionChange(const QItemSelection &selected);
+    QItemSelectionModel *selectionModel;
+public slots:
+    void onSelectionChange(QString folderPath);
 
 private:
     QFileSystemModel *rightPartModel;

@@ -11,8 +11,8 @@
 #include <QJsonValue>
 #include <QJsonObject>
 
-QVariant JsonDataReader::getData(const QString fileName) {
-    QFile file(fileName);
+QVariant JsonDataReader::getData(const QFileInfo fileInfo) {
+    QFile file(fileInfo.filePath());
     QString jsonString;
 
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -20,7 +20,8 @@ QVariant JsonDataReader::getData(const QString fileName) {
         file.close();
     } else {
         qDebug()<< "Error: file not found.";
-        return QVariant::fromValue(nullptr);
+        m_data = QVariant::fromValue(nullptr);
+        return m_data;
     }
 
     auto jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
@@ -39,38 +40,35 @@ QVariant JsonDataReader::getData(const QString fileName) {
         keyValue[key] = val;
     }
 
-    return QVariant::fromValue(keyValue);
+    m_data = QVariant::fromValue(keyValue);
+    return m_data;
 }
 
-QVariant SQLiteDataReader::getData(const QString fileName) {
+QVariant SQLiteDataReader::getData(const QFileInfo fileInfo) {
     m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName(fileName);
+    m_db.setDatabaseName(fileInfo.filePath());
 
     if (!m_db.open()) {
         qDebug() << "Error: can't open database";
     } else {
 
-        QStringList* tables = new QStringList;
-        *tables = m_db.tables();
+        QString table = fileInfo.baseName();
 
         QMap<QString, QVariant> keyValue;
 
-        for (auto i = 0; i < tables->size(); i++) {
-            QSqlQuery query;
-            int idTime = query.record().indexOf("Time");
-            int idValue = query.record().indexOf("Value");
-            query.prepare("SELECT * FROM (:name)");
-            query.bindValue(":name", tables[i]);
+        QSqlQuery query;
+        query.prepare("SELECT * FROM " + table);
 
-            if (query.exec())
-            {
-               while (query.next())
-               {
-                   keyValue[query.value(idTime).toString()] = query.value(idValue);
-               }
-            }
+        if (query.exec()) {
+           while (query.next()) {
+               keyValue[query.value(0).toString()] = query.value(1);
+               //qDebug() << query.value(0).toString() << ": " << query.value(1) << "\n";
+           }
         }
-        return QVariant::fromValue(keyValue);
+        m_data = QVariant::fromValue(keyValue);
+        return m_data;
     }
-    return QVariant::fromValue(nullptr);
+
+    m_data = QVariant::fromValue(nullptr);
+    return m_data;
 }
