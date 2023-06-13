@@ -74,6 +74,7 @@ public slots:
     void updateChart();
     void updatePlaceholder(QString str);
     void changeColorPalette(bool isBlackAndWhite);
+    void printToPDF();
 
 private:
     QtCharts::QChartView *m_chartView;

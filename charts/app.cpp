@@ -38,6 +38,7 @@ App::App(QWidget *parent) {
     connect(this, &App::updateChartData, chartsView, &ChartsView::setData);
     connect(this, &App::showPlaceholder, chartsView, &ChartsView::updatePlaceholder);
     connect(topButtons->isBlackAndWhite, &QCheckBox::stateChanged, chartsView, &ChartsView::changeColorPalette);
+    connect(topButtons->printToPDF, &QPushButton::clicked, chartsView, &ChartsView::printToPDF);
 }
 
 void App::chooseFolder() {

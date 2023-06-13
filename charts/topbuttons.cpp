@@ -14,7 +14,7 @@ TopButtons::TopButtons(QWidget* parent) : QWidget(parent) {
     isBlackAndWhite = new QCheckBox(this);
     isBlackAndWhiteLabel = new QLabel("Черно-белый график", this);
 
-    printToPDF = new QPushButton("Печать графика", this);
+    printToPDF = new QPushButton("Сохранить в PDF", this);
 
     QHBoxLayout* comboboxLayout = new QHBoxLayout();
 

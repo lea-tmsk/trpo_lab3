@@ -6,6 +6,8 @@
 #include <QVector>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QPdfWriter>
+#include <QFileDialog>
 
 ChartsView::ChartsView(QWidget *parent) {
     m_chartLayout = new QVBoxLayout(this);
@@ -80,6 +82,22 @@ void ChartsView::changeColorPalette(bool isBlackAndWhite) {
     if (m_currentData.size() > 0) {
         updateChart();
     }
+}
+
+void ChartsView::printToPDF() {
+    QString fileName = QFileDialog::getSaveFileName(this,
+        tr("Save as"), QDir::homePath(), tr("PDF Files (*.pdf)"));
+
+    QPdfWriter writer(fileName);
+
+    writer.setCreator("Charts");//Указываем создателя документа
+
+    writer.setPageSize(QPagedPaintDevice::A4);//Устанавливаем размер страницы
+
+    QPainter painter(&writer);
+
+    m_chartView->render(&painter);
+    painter.end();
 }
 
 QtCharts::QAbstractSeries *PieChart::getSeries(QMap<QString, QVariant> data) {
