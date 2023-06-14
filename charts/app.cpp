@@ -1,8 +1,8 @@
 #include "app.h"
 #include "datareader.h"
+#include "ioc.h"
 #include <QFileDialog>
 #include <QHBoxLayout>
-#include <QDebug>
 #include <QMap>
 #include <QVariant>
 #include <QSplitter>
@@ -34,7 +34,7 @@ App::App(QWidget *parent) {
     connect(this, &App::updateChart, chartsView, &ChartsView::updateChart);
     connect(this, &App::updateChartData, chartsView, &ChartsView::setData);
     connect(this, &App::showPlaceholder, chartsView, &ChartsView::updatePlaceholder);
-    connect(filesView->selectionModel, &QItemSelectionModel::currentChanged, this, &App::currentIndexChanged);
+    connect(filesView->selectionModel, &QItemSelectionModel::currentChanged, this, &App::currentFileChanged);
     connect(topButtons->chooseFolder, &QPushButton::clicked, this, &App::chooseFolder);
     connect(topButtons->isBlackAndWhite, &QCheckBox::stateChanged, chartsView, &ChartsView::changeColorPalette);
     connect(topButtons->chartType, &QComboBox::currentTextChanged, this, &App::typeChanged);
@@ -48,7 +48,7 @@ void App::chooseFolder() {
     }
 }
 
-void App::currentIndexChanged(QModelIndex index) {
+void App::currentFileChanged(QModelIndex index) {
     QFileSystemModel *fileModel = new QFileSystemModel(this);
 
     QString suffix = fileModel->fileInfo(index).suffix();
@@ -61,26 +61,19 @@ void App::currentIndexChanged(QModelIndex index) {
     }
 
     if (suffix == "sqlite") {
-        qDebug() << "current file is sqlite";
-
-        SQLiteDataReader sql;
-        QVariant data = sql.getData(fileModel->fileInfo(index));
-        QMap<QString, QVariant> temp = data.toMap();
-
-        if (temp.size() > 0) {
-            emit updateChartData(temp);
-        }
-
+        gContainer.RegisterFactory<IDataReader, SQLiteDataReader>();
     } else if (suffix == "json") {
-        qDebug() << "current file is json";
+        gContainer.RegisterFactory<IDataReader, JsonDataReader>();
+    } else {
+        delete fileModel;
+        return;
+    }
 
-        JsonDataReader json;
-        QVariant data = json.getData(fileModel->fileInfo(index));
-        QMap<QString, QVariant> temp = data.toMap();
+    QVariant data = gContainer.GetObject<IDataReader>()->getData(fileModel->fileInfo(index));
+    QMap<QString, QVariant> temp = data.toMap();
 
-        if (temp.size() > 0) {
-            emit updateChartData(temp);
-        }
+    if (temp.size() > 0) {
+        emit updateChartData(temp);
     }
 
     delete fileModel;

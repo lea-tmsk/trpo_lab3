@@ -14,7 +14,7 @@ public:
 
 public slots:
     void chooseFolder();
-    void currentIndexChanged(QModelIndex index);
+    void currentFileChanged(QModelIndex index);
     void typeChanged(QString type);
 
 signals:

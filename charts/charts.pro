@@ -24,6 +24,7 @@ HEADERS += \
     chartsview.h \
     datareader.h \
     filesview.h \
+    ioc.h \
     mainwindow.h \
     topbuttons.h
 
