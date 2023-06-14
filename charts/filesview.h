@@ -17,8 +17,7 @@ public slots:
     void onSelectionChange(QString folderPath);
 
 private:
-    QFileSystemModel *rightPartModel;
-    QFileSystemModel *leftPartModel;
+    QFileSystemModel *model;
     QTreeView *treeView;
     QTableView *tableView;
     QHBoxLayout *hLayout;

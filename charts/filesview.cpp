@@ -15,38 +15,29 @@ FilesView::FilesView(QWidget *parent) : QWidget(parent) {
 //    this->setStatusBar(new QStatusBar(this));
 //    this->statusBar()->showMessage("Выбранный путь : ");
     QString homePath = QDir::homePath();
-    // Определим  файловой системы:
-    leftPartModel =  new QFileSystemModel(this);
-    leftPartModel->setFilter(QDir::NoDotAndDotDot | QDir::AllDirs);
-    leftPartModel->setRootPath(homePath);
 
-    rightPartModel = new QFileSystemModel(this);
-    rightPartModel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    model = new QFileSystemModel(this);
+    model->setFilter(QDir::NoDotAndDotDot | QDir::Files);
 
     //фильтры для sqlite и json файлов
     QStringList filters;
     filters << "*.sqlite";
     filters << "*.json";
-    rightPartModel->setNameFilters(filters);
-    rightPartModel->setNameFilterDisables(false);
+    model->setNameFilters(filters);
+    model->setNameFilterDisables(false);
 
-    rightPartModel->setRootPath(homePath);
+    model->setRootPath(homePath);
     //Показатьв виде "дерева". Пользуемся готовым видом(TreeView):
     treeView = new QTreeView();
     // Устанавливаем модель данных для отображения
     treeView->setModel(leftPartModel);
     //Раскрываем все папки первого уровня
     treeView->expandAll();
-    // Создаем объект "сплиттер(разделитель)"
-    //QSplitter *splitter = new QSplitter();
 
     tableView = new QTableView;
-    tableView->setModel(rightPartModel);
-//    splitter->addWidget(treeView);
-//    splitter->addWidget(tableView);
+    tableView->setModel(model);
 
     hLayout->addWidget(tableView);
-//    setCentralWidget(splitter);
     /*
      * QItemSelectionModel *selectionModel отслеживает выбранные элементы в представлении treeView,
      * также отслеживает текущий выбранный элемент в представлении treeView.
@@ -55,11 +46,6 @@ FilesView::FilesView(QWidget *parent) : QWidget(parent) {
     treeView->header()->resizeSection(0, 500);
 
     //Выполняем соединения слота и сигнала который вызывается когда осуществляется выбор элемента в TreeView
-
-    /*connect(selectionModel, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this, SLOT(on_selectionChangedSlot(const QItemSelection &, const QItemSelection &)));*/
-
-//    connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &FilesView::onSelectionChange);
 
     //Пример организации установки курсора в TreeView относительно модельного индекса
     QItemSelection toggleSelection;
@@ -75,25 +61,7 @@ void FilesView::onSelectionChange(QString folderPath) {
 
     QModelIndex index = treeView->selectionModel()->currentIndex();
 
-//    QModelIndexList indexs =  selected.indexes();
-
     QString filePath = folderPath;
 
-    // Размещаем информацию в statusbar относительно выделенного модельного индекса
-    /*
-     * Смотрим, сколько индексов было выделено.
-     * В нашем случае выделяем только один, следовательно всегда берем только первый.
-    */
-//    if (indexs.count() >= 1) {
-//        QModelIndex ix =  indexs.constFirst();
-//        filePath = leftPartModel->filePath(ix);
-        //this->statusBar()->showMessage("Выбранный путь : " + leftPartModel->filePath(indexs.constFirst()));
-//    }
-
-    /*
-     * Получив выбранные данные из левой части filePath(путь к папке/файлу).
-     * Для представления в правой части устанваливаем корневой индекс относительно filePath.
-     * Табличное представление отображает только файлы, находящиеся в filePath(папки не отображает)
-     */
-    tableView->setRootIndex(rightPartModel->setRootPath(filePath));
+    tableView->setRootIndex(model->setRootPath(filePath));
 }

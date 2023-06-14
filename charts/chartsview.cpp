@@ -84,6 +84,10 @@ void ChartsView::changeColorPalette(bool isBlackAndWhite) {
 }
 
 void ChartsView::printToPDF() {
+    if (m_currentData.size() == 0) {
+        return;
+    }
+
     QString fileName = QFileDialog::getSaveFileName(this,
         tr("Save as"), QDir::homePath(), tr("PDF Files (*.pdf)"));
 
