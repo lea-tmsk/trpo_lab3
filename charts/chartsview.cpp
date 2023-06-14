@@ -10,6 +10,8 @@
 #include <QFileDialog>
 
 ChartsView::ChartsView(QWidget *parent) {
+    Q_UNUSED(parent);
+
     m_chartLayout = new QVBoxLayout(this);
     m_placeholder = new QLabel("Выберите файл", this);
 
@@ -27,7 +29,6 @@ ChartsView::ChartsView(QWidget *parent) {
 
     m_chart = m_chartView->chart();
 
-//    m_chart->setTheme();
     m_chart->setTheme(QtCharts::QChart::ChartThemeLight);
 
     m_chart->legend()->hide();
@@ -43,7 +44,7 @@ void ChartsView::setChartType(Chart *newType) {
     }
 }
 
-void ChartsView::setData(const QMap<QString, QVariant> &data) {
+void ChartsView::setData(const QMap<QString, QVariant>& data) {
     m_currentData = data;
     updateChart();
 }
@@ -55,8 +56,6 @@ void ChartsView::updateChart() {
     QtCharts::QAbstractSeries *series = m_chartType->getSeries(m_currentData);
     m_chart->addSeries(series);
 
-    // Due to Qt bug, must show() the chart before render()
-    // or it will be draw too tiny in the PDF by QPainter
     m_chart->createDefaultAxes();
 
     m_chartLayout->addWidget(m_chartView);
@@ -119,5 +118,12 @@ QtCharts::QAbstractSeries *BarChart::getSeries(const QMap<QString, QVariant>& da
         *set << i.value().toDouble();
     }
     m_series->append(set);
+
+//    while (i.hasNext()) {
+//        QtCharts::QBarSet *set = new QtCharts::QBarSet("");
+//        i.next();
+//        *set << i.value().toDouble();
+//        m_series->append(set);
+//    }
     return m_series;
 }

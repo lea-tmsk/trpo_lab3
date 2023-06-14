@@ -51,14 +51,13 @@ public:
         delete m_chartType;
     }
 
-    void setChartType(Chart *newType);
-    void setData(const QMap<QString, QVariant>& data);
-
 public slots:
     void updateChart();
     void updatePlaceholder(QString str);
     void changeColorPalette(bool isBlackAndWhite);
     void printToPDF();
+    void setChartType(Chart *newType);
+    void setData(const QMap<QString, QVariant>& data);
 
 private:
     QtCharts::QChartView *m_chartView;

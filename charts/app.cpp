@@ -30,14 +30,14 @@ App::App(QWidget *parent) {
     vLayout->addWidget(topButtons);
     vLayout->addWidget(splitter);
 
-    connect(topButtons->chooseFolder, &QPushButton::clicked, this, &App::chooseFolder);
     connect(this, &App::onFolderChange, filesView, &FilesView::onSelectionChange);
-    connect(filesView->selectionModel, &QItemSelectionModel::currentChanged, this, &App::currentIndexChanged);
     connect(this, &App::updateChart, chartsView, &ChartsView::updateChart);
-    connect(topButtons->chartType, &QComboBox::currentTextChanged, this, &App::typeChanged);
     connect(this, &App::updateChartData, chartsView, &ChartsView::setData);
     connect(this, &App::showPlaceholder, chartsView, &ChartsView::updatePlaceholder);
+    connect(filesView->selectionModel, &QItemSelectionModel::currentChanged, this, &App::currentIndexChanged);
+    connect(topButtons->chooseFolder, &QPushButton::clicked, this, &App::chooseFolder);
     connect(topButtons->isBlackAndWhite, &QCheckBox::stateChanged, chartsView, &ChartsView::changeColorPalette);
+    connect(topButtons->chartType, &QComboBox::currentTextChanged, this, &App::typeChanged);
     connect(topButtons->printToPDF, &QPushButton::clicked, chartsView, &ChartsView::printToPDF);
 }
 
@@ -54,6 +54,7 @@ void App::currentIndexChanged(QModelIndex index) {
     QString suffix = fileModel->fileInfo(index).suffix();
 
     if (fileModel->fileInfo(index).size() > 1048576) {
+        emit updateChartData(QMap<QString, QVariant>());
         emit showPlaceholder("Файл слишком большой");
         delete fileModel;
         return;
