@@ -3,7 +3,6 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QStackedBarSeries>
-#include <QtCharts/QLineSeries>
 #include <QWidget>
 #include <QMap>
 #include <QString>
@@ -13,14 +12,10 @@
 #include <QDebug>
 
 class Chart {
-//    Q_OBJECT
 public:
     Chart() {};
     virtual ~Chart() = default;
-    virtual QtCharts::QAbstractSeries* getSeries(QMap<QString, QVariant> data) = 0;/*{
-        qDebug() << "no chart chosen";
-        return nullptr;
-    }*/
+    virtual QtCharts::QAbstractSeries* getSeries(const QMap<QString, QVariant>& data) = 0;
 };
 
 class PieChart : public Chart {
@@ -29,7 +24,7 @@ public:
     ~PieChart() {
         delete m_series;
     }
-    QtCharts::QAbstractSeries* getSeries(QMap<QString, QVariant> data) override;
+    QtCharts::QAbstractSeries* getSeries(const QMap<QString, QVariant>& data) override;
     QtCharts::QPieSeries *m_series;
 };
 
@@ -39,19 +34,8 @@ public:
     ~BarChart() {
         delete m_series;
     }
-    QtCharts::QAbstractSeries* getSeries(QMap<QString, QVariant> data) override;
+    QtCharts::QAbstractSeries* getSeries(const QMap<QString, QVariant>& data) override;
     QtCharts::QStackedBarSeries *m_series;
-};
-
-class LineChart : public Chart {
-public:
-    LineChart() {};
-    ~LineChart() {
-        delete m_series;
-    }
-
-    QtCharts::QAbstractSeries *getSeries(QMap<QString, QVariant> data) override;
-    QtCharts::QLineSeries *m_series;
 };
 
 class ChartsView : public QWidget {

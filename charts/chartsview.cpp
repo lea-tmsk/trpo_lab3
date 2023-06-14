@@ -100,7 +100,7 @@ void ChartsView::printToPDF() {
     painter.end();
 }
 
-QtCharts::QAbstractSeries *PieChart::getSeries(QMap<QString, QVariant> data) {
+QtCharts::QAbstractSeries *PieChart::getSeries(const QMap<QString, QVariant>& data) {
     m_series = new QtCharts::QPieSeries();
     QMapIterator<QString, QVariant> i(data);
     while (i.hasNext()) {
@@ -110,7 +110,7 @@ QtCharts::QAbstractSeries *PieChart::getSeries(QMap<QString, QVariant> data) {
     return m_series;
 }
 
-QtCharts::QAbstractSeries *BarChart::getSeries(QMap<QString, QVariant> data) {
+QtCharts::QAbstractSeries *BarChart::getSeries(const QMap<QString, QVariant>& data) {
     m_series = new QtCharts::QStackedBarSeries();
     QMapIterator<QString, QVariant> i(data);
     QtCharts::QBarSet *set = new QtCharts::QBarSet("");
