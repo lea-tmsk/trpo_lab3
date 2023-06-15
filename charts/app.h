@@ -22,6 +22,7 @@ signals:
     void updateChart();
     void showPlaceholder(QString str);
     void updateChartData(const QMap<QString, QVariant>& newData);
+    void updateChartType(Chart *type);
 
 private:
     TopButtons *topButtons;

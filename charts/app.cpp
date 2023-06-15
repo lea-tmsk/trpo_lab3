@@ -34,6 +34,7 @@ App::App(QWidget *parent) {
     connect(this, &App::updateChart, chartsView, &ChartsView::updateChart);
     connect(this, &App::updateChartData, chartsView, &ChartsView::setData);
     connect(this, &App::showPlaceholder, chartsView, &ChartsView::updatePlaceholder);
+    connect(this, &App::updateChartType, chartsView, &ChartsView::setChartType);
     connect(filesView->selectionModel, &QItemSelectionModel::currentChanged, this, &App::currentFileChanged);
     connect(topButtons->chooseFolder, &QPushButton::clicked, this, &App::chooseFolder);
     connect(topButtons->isBlackAndWhite, &QCheckBox::stateChanged, chartsView, &ChartsView::changeColorPalette);
@@ -81,8 +82,8 @@ void App::currentFileChanged(QModelIndex index) {
 
 void App::typeChanged(QString type) {
     if (type == "Bar Chart") {
-        chartsView->setChartType(new BarChart());
+        emit updateChartType(new BarChart());
     } else if (type == "Pie Chart") {
-        chartsView->setChartType(new PieChart());
+        emit updateChartType(new PieChart());
     }
 }
