@@ -18,7 +18,6 @@ public slots:
 
 private:
     QFileSystemModel *model;
-    QTreeView *treeView;
     QTableView *tableView;
     QHBoxLayout *hLayout;
 };

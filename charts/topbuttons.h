@@ -10,14 +10,7 @@ class TopButtons : public QWidget {
     Q_OBJECT
 public:
     TopButtons(QWidget* parent = nullptr);
-    ~TopButtons() {
-        delete chartType;
-        delete chartTypeLabel;
-        delete isBlackAndWhite;
-        delete isBlackAndWhiteLabel;
-        delete printToPDF;
-        delete chooseFolder;
-    }
+    ~TopButtons() {};
 //private:
     QComboBox* chartType;
     QLabel* chartTypeLabel;
