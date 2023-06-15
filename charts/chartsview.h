@@ -42,14 +42,7 @@ class ChartsView : public QWidget {
     Q_OBJECT
 public:
     ChartsView(QWidget *parent = nullptr);
-    ~ChartsView() {
-        delete m_chart;
-        delete m_chartLayout;
-        delete m_chartView;
-        delete m_placeholder;
-        delete m_placeholderLayout;
-        delete m_chartType;
-    }
+    ~ChartsView() {};
 
 public slots:
     void updateChart();

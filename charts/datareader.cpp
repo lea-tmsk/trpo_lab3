@@ -62,7 +62,6 @@ QVariant SQLiteDataReader::getData(const QFileInfo fileInfo) {
         if (query.exec()) {
            while (query.next()) {
                keyValue[query.value(0).toString()] = query.value(1);
-               //qDebug() << query.value(0).toString() << ": " << query.value(1) << "\n";
            }
         }
         m_data = QVariant::fromValue(keyValue);
