@@ -2,12 +2,13 @@
 #include <QStatusBar>
 #include <QSplitter>
 #include <QHeaderView>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 FilesView::FilesView(QWidget *parent) : QWidget(parent) {
 
-    QHBoxLayout* hLayout = new QHBoxLayout(this);
-    QString homePath = QDir::currentPath() + "/trpo_lab3/data";
+    QVBoxLayout* vLayout = new QVBoxLayout(this);
+    QString homePath =  QDir::homePath();
+    path = new QLabel("Current path: " + homePath, this);
 
     model = new QFileSystemModel(this);
     model->setFilter(QDir::NoDotAndDotDot | QDir::Files);
@@ -24,23 +25,27 @@ FilesView::FilesView(QWidget *parent) : QWidget(parent) {
     tableView = new QTableView;
     tableView->setModel(model);
 
-    hLayout->addWidget(tableView);
+    vLayout->addWidget(tableView);
+    vLayout->addWidget(path);
 
     selectionModel = tableView->selectionModel();
 
+    tableView->setRootIndex(model->setRootPath(homePath));
+
     //Пример организации установки курсора в TreeView относительно модельного индекса
-    QItemSelection toggleSelection;
+//    QItemSelection toggleSelection;
     //Объявили модельный индекс topLeft
-    QModelIndex topLeft;
+//    QModelIndex topLeft;
     //Получили индекс из модели
-    topLeft = model->index(homePath);
-    toggleSelection.select(topLeft, topLeft);
-    selectionModel->select(toggleSelection, QItemSelectionModel::Toggle);
+//    topLeft = model->index(homePath);
+//    toggleSelection.select(topLeft, topLeft);
+//    selectionModel->select(toggleSelection, QItemSelectionModel::Toggle);
 }
 
 void FilesView::onSelectionChange(QString folderPath) {
 
     QString filePath = folderPath;
+    path->setText("Current path: " + folderPath);
 
     tableView->setRootIndex(model->setRootPath(filePath));
 }
