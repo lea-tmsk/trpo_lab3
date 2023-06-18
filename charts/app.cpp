@@ -1,6 +1,4 @@
 #include "app.h"
-#include "datareader.h"
-#include "ioc.h"
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMap>
@@ -15,6 +13,8 @@ App::App(QWidget *parent) {
     filesView = new FilesView(this);
     topButtons = new TopButtons(this);
     chartsView = new ChartsView(this);
+    settings = new Settings();
+    maxSize = 1048576;
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
 
@@ -33,8 +33,10 @@ App::App(QWidget *parent) {
     connect(this, &App::onFolderChange, filesView, &FilesView::onSelectionChange);
     connect(this, &App::updateChart, chartsView, &ChartsView::updateChart);
     connect(this, &App::updateChartData, chartsView, &ChartsView::setData);
-    connect(this, &App::showPlaceholder, chartsView, &ChartsView::updatePlaceholder);
     connect(this, &App::updateChartType, chartsView, &ChartsView::setChartType);
+    connect(this, &App::updateFileType, settings, &Settings::changeFileType);
+    connect(settings, &Settings::changeChartData, chartsView, &ChartsView::setData);
+    connect(settings, &Settings::changePlaceholder, chartsView, &ChartsView::updatePlaceholder);
     connect(filesView->selectionModel, &QItemSelectionModel::currentChanged, this, &App::currentFileChanged);
     connect(topButtons->chooseFolder, &QPushButton::clicked, this, &App::chooseFolder);
     connect(topButtons->isBlackAndWhite, &QCheckBox::stateChanged, chartsView, &ChartsView::changeColorPalette);
@@ -52,25 +54,9 @@ void App::chooseFolder() {
 void App::currentFileChanged(QModelIndex index) {
     QFileSystemModel *fileModel = new QFileSystemModel(this);
 
-    QString suffix = fileModel->fileInfo(index).suffix();
+    emit updateFileType(fileModel->fileInfo(index), maxSize);
 
-    if (fileModel->fileInfo(index).size() > 1048576) {
-        emit updateChartData(QMap<QString, QVariant>());
-        emit showPlaceholder("Файл слишком большой");
-        delete fileModel;
-        return;
-    }
-
-    if (suffix == "sqlite") {
-        gContainer.RegisterFactory<IDataReader, SQLiteDataReader>();
-    } else if (suffix == "json") {
-        gContainer.RegisterFactory<IDataReader, JsonDataReader>();
-    } else {
-        delete fileModel;
-        return;
-    }
-
-    QVariant data = gContainer.GetObject<IDataReader>()->getData(fileModel->fileInfo(index));
+    QVariant data = settings->getObject()->getData(fileModel->fileInfo(index));
     QMap<QString, QVariant> temp = data.toMap();
 
     if (temp.size() > 0) {

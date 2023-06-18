@@ -1,3 +1,4 @@
+#pragma once
 #ifndef IOC_H
 #define IOC_H
 #include <functional>
@@ -5,7 +6,6 @@
 #include <memory>
 #include <map>
 #include <string>
-using namespace std;
 
 class IOCContainer
 {
@@ -114,8 +114,7 @@ public:
     }
 };
 
-IOCContainer gContainer;
-
+static IOCContainer gContainer;
 // инициализируем ненулевым числом
 int IOCContainer::s_nextTypeId = 115094801;
 

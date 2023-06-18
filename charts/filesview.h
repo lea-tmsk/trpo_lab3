@@ -4,7 +4,8 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QTableView>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
 
 class FilesView : public QWidget {
     Q_OBJECT
@@ -19,7 +20,8 @@ public slots:
 private:
     QFileSystemModel *model;
     QTableView *tableView;
-    QHBoxLayout *hLayout;
+    QVBoxLayout *vLayout;
+    QLabel *path;
 };
 
 #endif // FILESVIEW_H

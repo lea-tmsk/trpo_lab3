@@ -6,6 +6,7 @@
 #include "filesview.h"
 #include "topbuttons.h"
 #include "chartsview.h"
+#include "settings.h"
 
 class App : public QWidget {
     Q_OBJECT
@@ -23,11 +24,14 @@ signals:
     void showPlaceholder(QString str);
     void updateChartData(const QMap<QString, QVariant>& newData);
     void updateChartType(Chart *type);
+    void updateFileType(QFileInfo fileInfo, int maxSize);
 
 private:
     TopButtons *topButtons;
     FilesView *filesView;
     ChartsView *chartsView;
+    Settings *settings;
+    int maxSize;
 };
 
 #endif // APP_H
