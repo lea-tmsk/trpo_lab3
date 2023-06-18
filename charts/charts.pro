@@ -17,6 +17,7 @@ SOURCES += \
     filesview.cpp \
     main.cpp \
     mainwindow.cpp \
+    settings.cpp \
     topbuttons.cpp
 
 HEADERS += \
@@ -26,6 +27,7 @@ HEADERS += \
     filesview.h \
     ioc.h \
     mainwindow.h \
+    settings.h \
     topbuttons.h
 
 FORMS += \

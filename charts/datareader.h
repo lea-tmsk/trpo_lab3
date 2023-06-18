@@ -29,4 +29,10 @@ private:
     QSqlDatabase m_db;
 };
 
+class NullReader : public IDataReader {
+public:
+    NullReader() {};
+    QVariant getData(const QFileInfo fileInfo);
+};
+
 #endif // DATAREADER_H

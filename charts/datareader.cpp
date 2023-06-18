@@ -71,3 +71,8 @@ QVariant SQLiteDataReader::getData(const QFileInfo fileInfo) {
     m_data = QVariant::fromValue(nullptr);
     return m_data;
 }
+
+QVariant NullReader::getData(const QFileInfo fileInfo) {
+    Q_UNUSED(fileInfo);
+    return QVariant::fromValue(QMap<QString, QVariant>());
+}

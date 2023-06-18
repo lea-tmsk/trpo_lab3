@@ -7,7 +7,7 @@
 FilesView::FilesView(QWidget *parent) : QWidget(parent) {
 
     QHBoxLayout* hLayout = new QHBoxLayout(this);
-    QString homePath = QDir::homePath();
+    QString homePath = QDir::currentPath() + "/trpo_lab3/data";
 
     model = new QFileSystemModel(this);
     model->setFilter(QDir::NoDotAndDotDot | QDir::Files);
