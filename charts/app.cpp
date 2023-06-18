@@ -33,7 +33,6 @@ App::App(QWidget *parent) {
     connect(this, &App::onFolderChange, filesView, &FilesView::onSelectionChange);
     connect(this, &App::updateChart, chartsView, &ChartsView::updateChart);
     connect(this, &App::updateChartData, chartsView, &ChartsView::setData);
-//    connect(this, &App::showPlaceholder, chartsView, &ChartsView::updatePlaceholder);
     connect(this, &App::updateChartType, chartsView, &ChartsView::setChartType);
     connect(this, &App::updateFileType, settings, &Settings::changeFileType);
     connect(settings, &Settings::changeChartData, chartsView, &ChartsView::setData);
